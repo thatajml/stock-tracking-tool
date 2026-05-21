@@ -17,7 +17,7 @@ import {
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import ChartComponent from './ChartComponent'
 
-const API_BASE_URL = 'http://127.0.0.1:5000/api'
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000/api'
 
 function App() {
   const [stocks, setStocks] = useState([])
