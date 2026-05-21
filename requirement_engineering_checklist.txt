@@ -1,0 +1,445 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2868
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww23000\viewh14820\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs36 \cf0 # Stock Tracking Tool - Requirements Engineering Checklist\
+\
+## 1. STAKEHOLDER REQUIREMENTS\
+\
+### 1.1 Primary Users\
+- [ ] Who are the primary users? (Individual retail investors, professional traders, beginners, etc.)\
+A. Beginners, positional traders.\
+- [ ] What is their technical expertise level? (Beginner/Intermediate/Advanced)\
+A. Beginner-intermediate\
+- [ ] What is their trading experience level?\
+A. Beginner-intermediate\
+- [ ] How many concurrent users do you expect?\
+A. One\
+- [ ] Will there be different user roles? (Admin, Premium users, Free users, etc.)\
+A. For now only free users (can scale later)\
+\
+### 1.2 Stakeholder Goals\
+- [ ] What problem does this tool solve for users?\
+A. Provide users entry and exit positions of various stocks based on historical analysis of technical indicators.\
+- [ ] What are the success metrics for this project?\
+A. 1. \
+- [ ] Who else has interest in this project? (Investors, partners, etc.)\
+A. For now just me. (Personal project)\
+\
+---\
+\
+## 2. FUNCTIONAL REQUIREMENTS\
+\
+### 2.1 Stock Selection\
+- [ ] How will users select their 5 stocks? (Search bar, dropdown, ticker symbol input?)\
+A. Search bar. (Initial prototype will only consider NIFTY 50 OHLC data of 10 years, to check indicator strategies)\
+- [ ] Can users save multiple portfolios/watchlists of 5 stocks each?\
+A. Yes\
+- [ ] Can users modify their stock selections after initial setup?\
+A. Yes\
+- [ ] Should there be stock suggestion/recommendation features?\
+A. No (can be added in later versions) \
+- [ ] Which stock markets/exchanges should be supported? (NYSE, NASDAQ, international?)\
+A. NSE India\
+- [ ] Any restrictions on stock types? (Common stocks only, or include ETFs, mutual funds?)\
+A. Start with NIFTY 50 OHLC. Later stocks, etfs can be added in future versions.\
+\
+### 2.2 Technical Indicators - Data Requirements\
+- [ ] RSI 14: What time intervals? (1min, 5min, 15min, 1hr, daily?)\
+A. Daily time interval due to lack of availability, in the initial prototype.\
+- [ ] SMA 20: Which time periods should be displayed?\
+A. \
+- [ ] KST (Know Sure Thing): What specific parameters? (Default or customizable?)\
+A. Default. (Customizable in future versions) \
+- [ ] MACD 12: Standard settings (12,26,9) or customizable?\
+A. Standard Settings. (Customizable in future versions) \
+- [ ] Should users be able to customize indicator parameters?\
+A. No. ( feature can be added in future versions) \
+- [ ] Any additional indicators needed in the future?\
+A. Yes.\
+- [ ] What historical data range is needed? (1 year, 5 years, all available?)\
+A. 10 years.\
+\
+### 2.3 Graph/Visualization\
+- [ ] What type of charts? (Candlestick, line, bar, OHLC?)\
+A. Candlestick, Bar\
+- [ ] Should graphs be interactive? (Zoom, pan, hover for details?)\
+A. in future versions.\
+- [ ] Should multiple indicators be overlaid on one chart or separate panels?\
+A. One chart. (Future versions can support separate panels according to user\'92s convenience) \
+- [ ] Real-time updates or periodic refresh? If periodic, what frequency?\
+A. No real time updates in the initial prototype. (Feature can be added in future versions)\
+- [ ] Should users be able to compare multiple stocks on one graph?\
+A. No.(Future versions)\
+- [ ] Export functionality for charts? (PNG, PDF, etc.)\
+A. No. (Future versions)\
+\
+### 2.4 Analysis Algorithm\
+- [ ] What specific criteria define "right time to enter a position"?\
+  - [ ] RSI thresholds? \
+A. oversold <30, overbought >70\
+  - [ ] SMA crossover patterns?\
+A. Price above SMA 20\
+  - [ ] MACD signal line crossovers?\
+A. MACD over signal\
+  - [ ] Bollinger Bands\
+A. Price near middle band, or bounce from lower band\
+\
+  - [ ] Combination of multiple indicators?\
+A. Yes.\
+- [ ] Should the algorithm be rule-based or ML-based?\
+A. Rule based in the initial version. (ML based algorithms can be added in future versions)\
+- [ ] What timeframes for analysis? (You mentioned 1 week and 1 month - both always, or user choice?)\
+A. Daily (user choice in future versions) \
+- [ ] Should it provide buy/sell/hold recommendations?\
+A. Yes. \
+- [ ] Confidence score or just binary yes/no signals?\
+A. Binary in the initial version. (Confidence score can be integrated in future versions) \
+- [ ] Should it explain WHY it's recommending entry? (Show which indicators triggered)\
+A. Yes.\
+\
+### 2.5 Notification System (Skip in the initial version)\
+- [ ] How should users be notified? (Email, SMS, push notifications, in-app only?)\
+- [ ] Can users customize notification preferences?\
+- [ ] Notification frequency limits? (To avoid spam)\
+- [ ] Should there be different urgency levels for notifications?\
+- [ ] Notification history/log?\
+- [ ] Opt-in/opt-out for different notification types?\
+\
+### 2.6 User Account Management (Skip in the initial version)\
+- [ ] User registration required or guest access allowed?\
+- [ ] Authentication method? (Email/password, OAuth, 2FA?)\
+- [ ] Password reset functionality?\
+- [ ] User profile/settings page?\
+- [ ] Account deletion/data export (GDPR compliance)?\
+\
+### 2.7 Data Management \
+- [ ] How long should historical data be stored per user?\
+- [ ] Should users be able to export their data?\
+- [ ] Data backup and recovery requirements?\
+\
+---\
+\
+## 3. NON-FUNCTIONAL REQUIREMENTS\
+\
+### 3.1 Performance (can be taken care of in future versions)\
+- [ ] Maximum acceptable page load time?\
+A. Nil\
+- [ ] Chart rendering time expectations?\
+A. Nil\
+- [ ] API response time requirements?\
+A. Nil\
+- [ ] How many requests per second should the system handle?\
+- [ ] Acceptable latency for data updates?\
+\
+### 3.2 Scalability\
+- [ ] Expected number of users in Year 1? Year 3?\
+A. 1( personal project initially)\
+- [ ] Peak usage times anticipated?\
+A. Nil\
+- [ ] Horizontal or vertical scaling strategy?\
+A. Horizontal\
+\
+### 3.3 Availability & Reliability\
+- [ ] Required uptime? (99%, 99.9%, 99.99%?)\
+A. Personal Project. I can turn it on/off whenever required. \
+- [ ] Maintenance window preferences?\
+A. \
+- [ ] Disaster recovery requirements?\
+A.\
+- [ ] What happens if stock data API goes down?\
+A. Display of error message\
+\
+### 3.4 Security\
+- [ ] What user data needs to be protected? (Personal info, watchlists, etc.)\
+- [ ] Encryption requirements? (Data at rest, in transit?)\
+- [ ] Compliance requirements? (GDPR, CCPA, financial regulations?)\
+- [ ] API key/credential management strategy?\
+- [ ] Rate limiting to prevent abuse?\
+- [ ] Protection against common web vulnerabilities? (SQL injection, XSS, CSRF)\
+\
+### 3.5 Usability\
+- [ ] Target devices? (Desktop, mobile, tablet - responsive design?)\
+A. Desktop (Website)\
+- [ ] Browser compatibility requirements? (Chrome, Firefox, Safari, Edge?)\
+A. Chrome\
+- [ ] Accessibility requirements? (WCAG compliance level?)\
+- [ ] Internationalization needed? (Multiple languages?)\
+A. English \
+- [ ] Should there be a tutorial/onboarding for new users?\
+A. Yes.\
+\
+### 3.6 Compatibility\
+- [ ] API compatibility with stock data providers?\
+A. Use Yahoo Finance\
+- [ ] Database compatibility requirements?\
+A. Will think about it later\
+- [ ] Third-party service integrations?\
+A. Will think about it later\
+\
+---\
+\
+## 4. DATA REQUIREMENTS\
+\
+### 4.1 Data Sources\
+- [ ] Which stock data API? (Alpha Vantage, Yahoo Finance, IEX Cloud, Polygon.io, Finnhub?)\
+A. NIFTY 50 dataset is used initially. Yahoo Finance used in later versions, when proof of concept established.\
+- [ ] Free tier sufficient or paid plan needed?\
+A. Free\
+- [ ] Real-time data required or 15-minute delay acceptable?\
+A. Yes\
+- [ ] Backup data source if primary fails?\
+A. Nil, will think about this later\
+- [ ] API rate limits and how to handle them?\
+A. Display of error message.\
+\
+### 4.2 Data Storage\
+- [ ] What data needs to be stored in database?\
+  - [ ] User profiles and preferences? Yes\
+  - [ ] Stock watchlists? Yes\
+  - [ ] Historical price data? Yes\
+  - [ ] Calculated indicator values? Yes\
+  - [ ] Notification history? (Skipped)\
+  - [ ] Analysis results? (Yes)\
+- [ ] Database type preference? (SQL: PostgreSQL, MySQL; NoSQL: MongoDB; Time-series: InfluxDB?) MySQL\
+- [ ] Data retention policy? Will think about it later\
+\
+### 4.3 Data Quality\
+- [ ] How to handle missing/incomplete data? \
+A.Will think later\
+- [ ] Data validation requirements?\
+A. Later\
+- [ ] Handling corporate actions (splits, dividends)?\
+A. No. Think about it later\
+\
+---\
+\
+## 5. TECHNICAL REQUIREMENTS\
+\
+### 5.1 Technology Stack - Frontend\
+- [ ] Framework preference? (React, Vue, Angular, Svelte, vanilla JS?) \
+A. React\
+- [ ] Charting library? (Chart.js, D3.js, Highcharts, TradingView Lightweight Charts, Plotly?)\
+A. TradingView\
+- [ ] UI component library? (Material-UI, Ant Design, Bootstrap, Tailwind?)\
+A. Material UI\
+- [ ] State management? (Redux, Context API, Vuex, etc.)\
+A. Context API initially.\
+\
+### 5.2 Technology Stack - Backend \
+- [ ] Backend language/framework? (Node.js/Express, Python/Django/Flask, Ruby/Rails, Java/Spring?)\
+A. Python/flask\
+- [ ] RESTful API or GraphQL?\
+A. RESTful initially. \
+- [ ] Real-time communication? (WebSockets, Server-Sent Events?)\
+A. I dont know about this much.\
+\
+### 5.3 Infrastructure ( I dont know much here)\
+- [ ] Hosting platform? (AWS, Google Cloud, Azure, Heroku, Vercel, DigitalOcean?\
+A. Vercel\
+- [ ] CI/CD pipeline requirements?\
+A. Will think about it later\
+- [ ] Containerization? (Docker, Kubernetes?)\
+A. Docker\
+- [ ] CDN for static assets?\
+A. Will think about it later.\
+### 5.4 Development Tools\
+- [ ] Version control? (Git - GitHub, GitLab, Bitbucket?)\
+A. Git\
+- [ ] Project management tool? (Jira, Trello, Asana, GitHub Projects?)\
+A. GitHub Projects\
+- [ ] Code review process?\
+A. Peer Review \
+- [ ] Testing framework requirements?\
+A. No idea about this\
+\
+---\
+\
+## 6. INTERFACE REQUIREMENTS\
+\
+### 6.1 User Interface\
+- [ ] Design mockups/wireframes available?\
+- [ ] Design system or brand guidelines?\
+- [ ] Preferred color scheme? (Light/dark mode?) A. Light\
+- [ ] Key pages needed: \
+  - [ ] Landing/Home page? A. Initially no.\
+  - [ ] Dashboard/main tracking page? A.Yes\
+  - [ ] Stock selection page? A. No\
+  - [ ] Individual stock detail page? A. No initially( can be added later)\
+  - [ ] Settings/preferences page? A. No initially\
+  - [ ] Notification center? A. Skipped initially\
+  - [ ] User profile page? A. No. (Added later.)\
+\
+### 6.2 External Interfaces\
+- [ ] Stock data API integration details?\
+- [ ] Email service provider? (SendGrid, AWS SES, Mailgun?) A. Skip\
+- [ ] SMS service provider? (Twilio, AWS SNS?)\
+- [ ] Push notification service? (Firebase Cloud Messaging, OneSignal?)\
+- [ ] Analytics integration? (Google Analytics, Mixpanel?)\
+\
+---\
+\
+## 7. CONSTRAINTS\
+\
+### 7.1 Budget Constraints\
+- [ ] Total budget for development?\
+A. Nil. (Personal Project)\
+- [ ] Ongoing operational budget (hosting, APIs, services)?\
+A. Nil\
+- [ ] Budget for stock data API subscription?\
+A. Nil\
+\
+### 7.2 Time Constraints\
+- [ ] Project deadline or target launch date?\
+A. 1 month\
+- [ ] Development phases/milestones?\
+A. \
+- [ ] MVP (Minimum Viable Product) features vs future enhancements?\
+A. Basic stock dashboard display along with indicators and buy and sell signals.\
+\
+### 7.3 Technical Constraints\
+- [ ] Must use specific technologies/platforms?\
+\
+- [ ] Cannot use certain technologies?\
+- [ ] Legacy system integration needed?\
+\
+### 7.4 Regulatory Constraints\
+- [ ] Financial advice regulations? (Disclaimer needed?)\
+A. Yes\
+- [ ] Data privacy laws compliance?\
+- [ ] Terms of service for stock data usage?\
+\
+---\
+\
+## 8. QUALITY REQUIREMENTS\
+\
+### 8.1 Testing\
+- [ ] Unit testing required? (Coverage percentage?)\
+- [ ] Integration testing scope?\
+- [ ] End-to-end testing requirements?\
+- [ ] Performance/load testing needed?\
+- [ ] User acceptance testing (UAT) plan?\
+\
+### 8.2 Documentation\
+- [ ] User documentation/help center needed?\
+- [ ] API documentation requirements?\
+- [ ] Technical documentation for maintenance?\
+- [ ] Code commenting standards?\
+\
+### 8.3 Maintainability\
+- [ ] Code quality standards? (Linting, formatting?)\
+- [ ] Logging and monitoring requirements?\
+- [ ] Error tracking? (Sentry, Rollbar?)\
+- [ ] How will bugs be reported and tracked?\
+\
+---\
+\
+## 9. BUSINESS REQUIREMENTS\
+\
+### 9.1 Monetization\
+- [ ] Free or paid service?\
+A. Free initially.\
+- [ ] Freemium model? (If yes, what features are premium?)\
+- [ ] Subscription pricing model?\
+- [ ] One-time purchase or recurring revenue?\
+- [ ] Advertisement support?\
+\
+### 9.2 Legal\
+- [ ] Terms of Service needed?\
+- [ ] Privacy Policy needed?\
+- [ ] Disclaimer about financial advice?\
+- [ ] Cookie policy?\
+- [ ] Intellectual property considerations?\
+\
+### 9.3 Marketing & Growth\
+- [ ] How will users discover the tool?\
+- [ ] Analytics to track user behavior?\
+- [ ] Referral program?\
+- [ ] Social sharing features?\
+\
+---\
+\
+## 10. RISK REQUIREMENTS\
+\
+### 10.1 Risk Identification\
+- [ ] What happens if stock data API becomes unavailable?\
+A. Display error. I will think about this later\
+- [ ] What if API costs increase unexpectedly?\
+A. Use free ones.\
+- [ ] Risk of algorithm providing poor recommendations?\
+A. \
+- [ ] Data breach scenarios?\
+- [ ] Technical debt concerns?\
+\
+### 10.2 Risk Mitigation\
+- [ ] Backup plans for each identified risk?\
+- [ ] User disclaimers about trading risks?\
+- [ ] Liability limitations?\
+\
+---\
+\
+## 11. ASSUMPTIONS & DEPENDENCIES\
+\
+### 11.1 Assumptions\
+- [ ] Users have basic stock market knowledge?\
+A. Yes\
+- [ ] Users have internet access and modern browsers?\
+A. Yes\
+- [ ] Stock markets will remain accessible via APIs?\
+A. Yes\
+\
+### 11.2 Dependencies\
+- [ ] Third-party services required for launch?\
+- [ ] External team members or contractors?\
+- [ ] Dependencies on other projects/systems?\
+\
+---\
+\
+## 12. ACCEPTANCE CRITERIA\
+\
+### 12.1 MVP Definition\
+- [ ] What is the minimum feature set for launch?\
+- [ ] What can be deferred to post-launch?\
+\
+### 12.2 Success Criteria\
+- [ ] How will you measure project success?\
+- [ ] User satisfaction metrics?\
+- [ ] Performance benchmarks?\
+- [ ] Accuracy of recommendations?\
+\
+---\
+\
+## NEXT STEPS AFTER COMPLETING CHECKLIST\
+\
+Once you've answered all these questions:\
+\
+1. **Prioritize requirements** using MoSCoW method:\
+   - Must have (Critical for launch)\
+   - Should have (Important but not critical)\
+   - Could have (Nice to have)\
+   - Won't have (Not in current scope)\
+\
+2. **Create user stories** from functional requirements\
+   - Format: "As a [user type], I want to [action] so that [benefit]"\
+\
+3. **Document technical specifications** based on technical requirements\
+\
+4. **Create project timeline** based on constraints and priorities\
+\
+5. **Develop system architecture** diagram\
+\
+6. **Create wireframes/mockups** based on interface requirements\
+\
+7. **Set up project tracking** with identified milestones\
+\
+---\
+\
+**Notes:**\
+- Answer each checkbox with details, not just yes/no\
+- Mark items as N/A if not applicable to your project\
+- Add additional items if you identify gaps\
+- Keep this document updated as requirements evolve\
+}

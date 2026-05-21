@@ -1,0 +1,48 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2868
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww5300\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 To run the **Stock Tracking Tool**, you need to start both the Python backend and the React frontend. Open two separate terminal windows and follow these steps:\
+\
+### 1. Start the Backend (Flask API)\
+The backend handles data fetching from Yahoo Finance and calculates all technical indicators.\
+\
+1.  Open your terminal and navigate to the backend folder:\
+    ```bash\
+    cd /Users/Allu/SEM/StockTrackingTool/backend\
+    ```\
+2.  Activate the Python virtual environment:\
+    ```bash\
+    source venv/bin/activate\
+    ```\
+3.  Run the application:\
+    ```bash\
+    python3 app.py\
+    ```\
+    *The backend will be running at `http://127.0.0.1:5000`.*\
+\
+---\
+\
+### 2. Start the Frontend (React UI)\
+The frontend provides the interactive dashboard and charts.\
+\
+1.  Open a **new** terminal window and navigate to the frontend folder:\
+    ```bash\
+    cd /Users/Allu/SEM/StockTrackingTool/frontend\
+    ```\
+2.  Run the development server:\
+    ```bash\
+    npm run dev\
+    ```\
+    *The frontend will be running at `http://localhost:5173`.*\
+\
+---\
+\
+### 3. Access the Dashboard\
+Once both are running:\
+1.  Open your browser and go to: **[http://localhost:5173](http://localhost:5173)**\
+2.  Use the search bar at the top right to look up any NSE stock ticker (e.g., `RELIANCE`, `TATASTEEL`, `ZOMATO`).\
+3.  The dashboard will automatically fetch current data, calculate the weighted confidence score, and render the synchronized charts!}

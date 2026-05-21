@@ -1,0 +1,48 @@
+# Dependency directories
+node_modules/
+backend/venv/
+venv/
+.venv/
+chromedriver/
+
+# Python cache and testing artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+backend/.pytest_cache/
+backend/__pycache__/
+backend/.coverage
+backend/test_results.txt
+selenium_tests/.pytest_cache/
+selenium_tests/.selenium_cache/
+selenium_tests/.chrome_profile/
+selenium_tests/.wdm/
+selenium_tests/__pycache__/
+selenium_tests/screenshots/
+
+# Log files
+*.log
+backend/*.log
+selenium_tests/*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs/Editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
