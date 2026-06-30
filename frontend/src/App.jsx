@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import {
   Container,
@@ -11,36 +11,90 @@ import {
   Toolbar,
   LinearProgress,
   Grid,
-  Autocomplete,
   TextField,
   Collapse,
-  Button
+  Button,
+  MenuList,
+  MenuItem,
+  Popper,
+  ClickAwayListener,
+  InputAdornment
 } from '@mui/material'
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import SearchIcon from '@mui/icons-material/Search';
 import ChartComponent from './ChartComponent'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000/api'
 
+const NIFTY_50_STOCKS = [
+  { ticker: "ADANIPORTS.NS", name: "Adani Ports and Special Economic Zone" },
+  { ticker: "ASIANPAINT.NS", name: "Asian Paints" },
+  { ticker: "AXISBANK.NS", name: "Axis Bank" },
+  { ticker: "BAJAJ-AUTO.NS", name: "Bajaj Auto" },
+  { ticker: "BAJFINANCE.NS", name: "Bajaj Finance" },
+  { ticker: "BAJAJFINSV.NS", name: "Bajaj Finserv" },
+  { ticker: "BEL.NS", name: "Bharat Electronics" },
+  { ticker: "BHARTIARTL.NS", name: "Bharti Airtel" },
+  { ticker: "CIPLA.NS", name: "Cipla" },
+  { ticker: "COALINDIA.NS", name: "Coal India" },
+  { ticker: "DRREDDY.NS", name: "Dr. Reddy's Laboratories" },
+  { ticker: "EICHERMOT.NS", name: "Eicher Motors" },
+  { ticker: "ETERNAL.NS", name: "Eternal" },
+  { ticker: "GRASIM.NS", name: "Grasim Industries" },
+  { ticker: "HCLTECH.NS", name: "HCL Technologies" },
+  { ticker: "HDFCBANK.NS", name: "HDFC Bank" },
+  { ticker: "HDFCLIFE.NS", name: "HDFC Life Insurance" },
+  { ticker: "HEROMOTOCO.NS", name: "Hero MotoCorp" },
+  { ticker: "HINDALCO.NS", name: "Hindalco Industries" },
+  { ticker: "HINDUNILVR.NS", name: "Hindustan Unilever" },
+  { ticker: "ICICIBANK.NS", name: "ICICI Bank" },
+  { ticker: "INDUSINDBK.NS", name: "IndusInd Bank" },
+  { ticker: "INFY.NS", name: "Infosys" },
+  { ticker: "ITC.NS", name: "ITC" },
+  { ticker: "JIOFIN.NS", name: "Jio Financial Services" },
+  { ticker: "JSWSTEEL.NS", name: "JSW Steel" },
+  { ticker: "KOTAKBANK.NS", name: "Kotak Mahindra Bank" },
+  { ticker: "LT.NS", name: "Larsen & Toubro" },
+  { ticker: "M&M.NS", name: "Mahindra & Mahindra" },
+  { ticker: "MARUTI.NS", name: "Maruti Suzuki India" },
+  { ticker: "NESTLEIND.NS", name: "Nestle India" },
+  { ticker: "NTPC.NS", name: "NTPC" },
+  { ticker: "ONGC.NS", name: "Oil and Natural Gas Corporation" },
+  { ticker: "POWERGRID.NS", name: "Power Grid Corporation of India" },
+  { ticker: "RELIANCE.NS", name: "Reliance Industries" },
+  { ticker: "SBILIFE.NS", name: "SBI Life Insurance" },
+  { ticker: "SBIN.NS", name: "State Bank of India" },
+  { ticker: "SHRIRAMFIN.NS", name: "Shriram Finance" },
+  { ticker: "SUNPHARMA.NS", name: "Sun Pharmaceutical Industries" },
+  { ticker: "TATACONSUM.NS", name: "Tata Consumer Products" },
+  { ticker: "TATAMOTORS.NS", name: "Tata Motors" },
+  { ticker: "TATASTEEL.NS", name: "Tata Steel" },
+  { ticker: "TCS.NS", name: "Tata Consultancy Services" },
+  { ticker: "TECHM.NS", name: "Tech Mahindra" },
+  { ticker: "TITAN.NS", name: "Titan Company" },
+  { ticker: "TRENT.NS", name: "Trent" },
+  { ticker: "ULTRACEMCO.NS", name: "UltraTech Cement" },
+  { ticker: "WIPRO.NS", name: "Wipro" },
+  { ticker: "APOLLOHOSP.NS", name: "Apollo Hospitals Enterprise" },
+  { ticker: "BAJAJHLDNG.NS", name: "Bajaj Holdings & Investment" },
+]
+
 function App() {
-  const [stocks, setStocks] = useState([])
+  const [stocks] = useState(NIFTY_50_STOCKS)
   const [selectedTicker, setSelectedTicker] = useState('')
   const [stockData, setStockData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [showLogic, setShowLogic] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [searchText, setSearchText] = useState('')
+  const searchAnchorRef = useRef(null)
 
   useEffect(() => {
-    axios.get(`${API_BASE_URL}/stocks`)
-      .then(res => {
-        setStocks(res.data)
-        if (res.data.length > 0) {
-          setSelectedTicker(res.data[0].ticker)
-        }
-      })
-      .catch(err => {
-        console.error("Error fetching stocks:", err)
-        setError("Failed to load available stocks.")
-      })
+    // Set first stock as default
+    if (NIFTY_50_STOCKS.length > 0) {
+      setSelectedTicker(NIFTY_50_STOCKS[0].ticker)
+    }
   }, [])
 
   useEffect(() => {
@@ -109,36 +163,88 @@ function App() {
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h4" component="h1" fontWeight="bold">
-            Quantitative Analysis
+            Quantitative Analysis{selectedTicker ? ` of ${stocks.find(s => s.ticker === selectedTicker)?.name || selectedTicker}` : ''}
           </Typography>
 
-          <Autocomplete
-            freeSolo
-            id="stock-search"
-            options={stocks}
-            getOptionLabel={(option) => typeof option === 'string' ? option : `${option.name} (${option.ticker})`}
-            value={stocks.find(s => s.ticker === selectedTicker) || selectedTicker}
-            onChange={(event, newValue) => {
-              if (typeof newValue === 'string' && newValue.trim() !== '') {
-                // User typed custom ticker. Automatically append .NS for NSE stocks if they didn't specify an exchange suffix
-                const ticker = newValue.trim().toUpperCase();
-                setSelectedTicker(ticker.includes('.') ? ticker : `${ticker}.NS`);
-              } else if (newValue && newValue.ticker) {
-                // User selected from pre-populated dropdown
-                setSelectedTicker(newValue.ticker);
-              }
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Search NSE Symbol (e.g. RELIANCE)"
-                variant="outlined"
-                helperText="Press Enter to search"
-              />
+          <Box 
+            ref={searchAnchorRef}
+            onMouseEnter={() => setSearchOpen(true)} 
+            onMouseLeave={() => setSearchOpen(false)}
+            sx={{ position: 'relative' }}
+          >
+            <TextField
+              id="stock-search"
+              label="Search NSE Symbol (e.g. RELIANCE)"
+              variant="outlined"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && searchText.trim()) {
+                  const ticker = searchText.trim().toUpperCase();
+                  setSelectedTicker(ticker.includes('.') ? ticker : `${ticker}.NS`);
+                  setSearchOpen(false);
+                  setSearchText('');
+                }
+              }}
+              disabled={loading}
+              sx={{ minWidth: 350 }}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+              helperText="Hover to browse or type to search"
+            />
+            {searchOpen && (
+              <Paper 
+                elevation={8} 
+                sx={{ 
+                  position: 'absolute', 
+                  top: '100%', 
+                  left: 0, 
+                  right: 0, 
+                  zIndex: 1300, 
+                  maxHeight: 300, 
+                  overflow: 'auto',
+                  mt: -2.5
+                }}
+              >
+                <MenuList dense>
+                  {stocks
+                    .filter(s => {
+                      if (!searchText) return true;
+                      const input = searchText.toLowerCase();
+                      return s.name.toLowerCase().includes(input) || s.ticker.toLowerCase().includes(input);
+                    })
+                    .map((stock) => (
+                      <MenuItem 
+                        key={stock.ticker} 
+                        selected={stock.ticker === selectedTicker}
+                        onClick={() => {
+                          setSelectedTicker(stock.ticker);
+                          setSearchOpen(false);
+                          setSearchText('');
+                        }}
+                      >
+                        {stock.name} ({stock.ticker})
+                      </MenuItem>
+                    ))
+                  }
+                  {stocks.filter(s => {
+                    if (!searchText) return true;
+                    const input = searchText.toLowerCase();
+                    return s.name.toLowerCase().includes(input) || s.ticker.toLowerCase().includes(input);
+                  }).length === 0 && (
+                    <MenuItem disabled>No matches found</MenuItem>
+                  )}
+                </MenuList>
+              </Paper>
             )}
-            sx={{ minWidth: 350 }}
-            disabled={loading}
-          />
+          </Box>
         </Box>
 
         {loading ? (
