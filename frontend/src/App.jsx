@@ -12,7 +12,9 @@ import {
   LinearProgress,
   Grid,
   Autocomplete,
-  TextField
+  TextField,
+  Collapse,
+  Button
 } from '@mui/material'
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import ChartComponent from './ChartComponent'
@@ -25,6 +27,7 @@ function App() {
   const [stockData, setStockData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [showLogic, setShowLogic] = useState(false)
 
   useEffect(() => {
     axios.get(`${API_BASE_URL}/stocks`)
@@ -150,6 +153,186 @@ function App() {
               </Typography>
               <ChartComponent data={stockData.data} />
             </Paper>
+
+            <Box sx={{ mb: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <Button 
+                variant="outlined" 
+                onClick={() => setShowLogic(!showLogic)}
+                sx={{ mb: 2 }}
+              >
+                {showLogic ? 'Hide Score Calculation' : 'Show Score Calculation'}
+              </Button>
+              <Collapse in={showLogic} sx={{ width: '100%' }}>
+                <Paper elevation={1} sx={{ p: 2, bgcolor: '#ffffff', color: '#000000', borderRadius: 2, border: '1px solid #e0e0e0' }}>
+                  <Typography variant="body2" component="pre" sx={{ fontFamily: 'monospace', m: 0, mb: 2, whiteSpace: 'pre-wrap', bgcolor: '#f5f5f5', p: 1.5, borderRadius: 1 }}>
+{`Initialize total_score = 0
+Create four categories:
+    Trend
+    Momentum
+    Timing
+    Confirmation`}
+                  </Typography>
+
+                  <Box sx={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, 
+                    gridAutoRows: '1fr',
+                    gap: 2, mb: 2 
+                  }}>
+                    {/* Trend */}
+                    <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                      <Box sx={{ bgcolor: '#9c27b0', color: 'white', py: 1, px: 1.5, textAlign: 'center' }}>
+                        <Typography variant="subtitle2" fontWeight="bold">TREND (Maximum ±35 points)</Typography>
+                      </Box>
+                      <Box sx={{ p: 1.5, flexGrow: 1, bgcolor: '#ffffff' }}>
+                        <Typography variant="body2" component="pre" sx={{ fontFamily: 'monospace', m: 0, whiteSpace: 'pre-wrap', color: '#000000' }}>
+{`IF Current Price > 20-day Simple Moving Average THEN
+    Add 15 points
+ELSE
+    Subtract 15 points
+END IF
+
+IF ADX > 25 THEN
+    IF +DI > -DI THEN
+        Add 10 points
+    ELSE
+        Subtract 10 points
+    END IF
+ELSE
+    Give 0 points
+END IF
+
+IF Ichimoku Cloud data exists THEN
+    Find the upper boundary of the cloud
+    Find the lower boundary of the cloud
+
+    IF Price is above the cloud THEN
+        Add 10 points
+    ELSE IF Price is below the cloud THEN
+        Subtract 10 points
+    ELSE
+        Give 0 points
+    END IF
+ELSE
+    Give 0 points
+END IF`}
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    {/* Momentum */}
+                    <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                      <Box sx={{ bgcolor: '#ed6c02', color: 'white', py: 1, px: 1.5, textAlign: 'center' }}>
+                        <Typography variant="subtitle2" fontWeight="bold">MOMENTUM (Maximum ±25 points)</Typography>
+                      </Box>
+                      <Box sx={{ p: 1.5, flexGrow: 1, bgcolor: '#ffffff' }}>
+                        <Typography variant="body2" component="pre" sx={{ fontFamily: 'monospace', m: 0, whiteSpace: 'pre-wrap', color: '#000000' }}>
+{`IF RSI is below 30
+    OR
+   RSI is between 40 and 60 AND rising
+THEN
+    Add 15 points
+ELSE IF RSI is above 70
+    OR
+        RSI is between 40 and 60 AND falling
+THEN
+    Subtract 15 points
+ELSE
+    Give 0 points
+END IF
+
+IF Stochastic is below 20
+AND Stochastic crosses above its signal line
+THEN
+    Add 10 points
+ELSE IF Stochastic is above 80
+AND Stochastic crosses below its signal line
+THEN
+    Subtract 10 points
+ELSE
+    Give 0 points
+END IF`}
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    {/* Timing */}
+                    <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                      <Box sx={{ bgcolor: '#0288d1', color: 'white', py: 1, px: 1.5, textAlign: 'center' }}>
+                        <Typography variant="subtitle2" fontWeight="bold">TIMING (Maximum ±20 points)</Typography>
+                      </Box>
+                      <Box sx={{ p: 1.5, flexGrow: 1, bgcolor: '#ffffff' }}>
+                        <Typography variant="body2" component="pre" sx={{ fontFamily: 'monospace', m: 0, whiteSpace: 'pre-wrap', color: '#000000' }}>
+{`IF MACD is above its Signal Line THEN
+    Add 10 points
+ELSE
+    Subtract 10 points
+END IF
+
+IF Price is above VWAP THEN
+    Add 10 points
+ELSE
+    Subtract 10 points
+END IF`}
+                        </Typography>
+                      </Box>
+                    </Box>
+
+                    {/* Confirmation */}
+                    <Box sx={{ border: '1px solid #e0e0e0', borderRadius: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                      <Box sx={{ bgcolor: '#2e7d32', color: 'white', py: 1, px: 1.5, textAlign: 'center' }}>
+                        <Typography variant="subtitle2" fontWeight="bold">CONFIRMATION (Maximum ±20 points)</Typography>
+                      </Box>
+                      <Box sx={{ p: 1.5, flexGrow: 1, bgcolor: '#ffffff' }}>
+                        <Typography variant="body2" component="pre" sx={{ fontFamily: 'monospace', m: 0, whiteSpace: 'pre-wrap', color: '#000000' }}>
+{`IF Bollinger Band data exists THEN
+    Calculate Bollinger Band Width
+    IF Price is near the Lower Band THEN
+        Add 10 points
+    ELSE IF Price is near the Upper Band THEN
+        Subtract 10 points
+    ELSE
+        Give 0 points
+    END IF
+ELSE
+    Give 0 points
+END IF
+
+IF Current Volume > Average 20-day Volume THEN
+    IF Current Score is Positive THEN
+        Add 10 points
+    ELSE IF Current Score is Negative THEN
+        Subtract 10 points
+    ELSE
+        Give 0 points
+    END IF
+ELSE
+    Give 0 points
+END IF`}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+
+                  <Typography variant="body2" component="pre" sx={{ fontFamily: 'monospace', m: 0, whiteSpace: 'pre-wrap', bgcolor: '#f5f5f5', p: 1.5, borderRadius: 1 }}>
+{`FINAL DECISION
+--------------------------------------------------
+IF Total Score >= 60 THEN
+    Signal = BUY
+ELSE IF Total Score <= -60 THEN
+    Signal = SELL
+ELSE
+    Signal = HOLD
+END IF
+
+Display:
+    Total Score
+    Buy / Hold / Sell Signal
+    Explanation from each category`}
+                  </Typography>
+                </Paper>
+              </Collapse>
+            </Box>
 
             <Alert
               severity={getSignalColor(stockData.signal)}
