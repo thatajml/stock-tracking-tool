@@ -181,6 +181,9 @@ function App() {
                     <Typography variant="caption" color="warning.main" fontWeight="bold">HOLD RANGE</Typography>
                     <Typography variant="caption" color="success.main" fontWeight="bold">HEAVY BUY</Typography>
                   </Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1, fontFamily: 'monospace' }}>
+                    Progress Bar Logic: Math.max(0, Math.min(100, (score + 100) / 2))
+                  </Typography>
                 </Box>
               </Box>
             </Alert>
