@@ -75,6 +75,16 @@ function App() {
     if (score <= -60) return "error"
     return "warning"
   }
+  const getCategoryScore = (reasons) => {
+    if (!reasons) return 0;
+    return reasons.reduce((total, reason) => {
+      const match = reason.match(/^([+-]?\s*\d+):/);
+      if (match) {
+        return total + parseInt(match[1].replace(/\s/g, ''), 10);
+      }
+      return total;
+    }, 0);
+  };
 
   return (
     <Box sx={{ flexGrow: 1, backgroundColor: '#f5f5f5', minHeight: '100vh', paddingBottom: 4 }}>
@@ -176,23 +186,50 @@ function App() {
             </Alert>
 
             {/* 4 Organised Subsections for Signal Breakdown */}
-            <Typography variant="h6" sx={{ mt: 4, mb: 2, fontWeight: 'bold' }}>
+            <Typography variant="h6" sx={{ mt: 4, mb: 2, fontWeight: 'bold', textAlign: 'center' }}>
               Algorithmic Breakdown by Sub-Section:
             </Typography>
 
-            {stockData.categories && (
-              <Grid container spacing={3}>
-                {Object.entries(stockData.categories).map(([categoryName, reasons]) => {
-                  // Assign colors based on category names for a premium look
-                  let headerColor = '#1976d2';
-                  if (categoryName === 'Trend') headerColor = '#9c27b0';
-                  if (categoryName === 'Momentum') headerColor = '#ed6c02';
-                  if (categoryName === 'Timing') headerColor = '#0288d1';
-                  if (categoryName === 'Confirmation') headerColor = '#2e7d32';
+            <Box sx={{ maxWidth: '1000px', margin: '0 auto' }}>
+              <Paper elevation={0} sx={{ p: 2, mb: 3, border: '1px solid', borderColor: 'divider', borderRadius: 2, bgcolor: 'background.default' }}>
+                <Typography variant="subtitle2" fontWeight="bold" gutterBottom color="text.secondary">
+                  Scoring Logic Overview & Calculation
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+                  The final signal is determined by a cumulative score ranging from <strong>-100 to +100</strong> across four categories: 
+                  Trend (35 pts), Momentum (25 pts), Timing (20 pts), and Confirmation (20 pts).
+                  <br/>
+                  <strong>Thresholds:</strong> Heavy Buy (≥ 60) | Hold (-59 to 59) | Heavy Sell (≤ -60).
+                </Typography>
+                {stockData.categories && (
+                  <Box sx={{ p: 1.5, bgcolor: 'action.hover', borderRadius: 1, display: 'inline-block' }}>
+                    <Typography variant="body2" fontWeight="bold" sx={{ fontFamily: 'monospace' }}>
+                      Calculation: Trend ({getCategoryScore(stockData.categories.Trend)}) + Momentum ({getCategoryScore(stockData.categories.Momentum)}) + Timing ({getCategoryScore(stockData.categories.Timing)}) + Confirmation ({getCategoryScore(stockData.categories.Confirmation)}) = {stockData.score}
+                    </Typography>
+                  </Box>
+                )}
+              </Paper>
 
-                  return (
-                    <Grid item xs={12} md={6} key={categoryName}>
+              {stockData.categories && (
+                <Box 
+                  sx={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' }, 
+                    gridAutoRows: '1fr',
+                    gap: 3 
+                  }}
+                >
+                  {Object.entries(stockData.categories).map(([categoryName, reasons]) => {
+                    // Assign colors based on category names for a premium look
+                    let headerColor = '#1976d2';
+                    if (categoryName === 'Trend') headerColor = '#9c27b0';
+                    if (categoryName === 'Momentum') headerColor = '#ed6c02';
+                    if (categoryName === 'Timing') headerColor = '#0288d1';
+                    if (categoryName === 'Confirmation') headerColor = '#2e7d32';
+
+                    return (
                       <Paper
+                        key={categoryName}
                         elevation={3}
                         sx={{
                           height: '100%',
@@ -202,7 +239,7 @@ function App() {
                           flexDirection: 'column'
                         }}
                       >
-                        <Box sx={{ bgcolor: headerColor, color: 'white', py: 1.5, px: 2 }}>
+                        <Box sx={{ bgcolor: headerColor, color: 'white', py: 1.5, px: 2, textAlign: 'center' }}>
                           <Typography variant="subtitle1" fontWeight="bold">
                             {categoryName} Logic
                           </Typography>
@@ -226,11 +263,11 @@ function App() {
                           </ul>
                         </Box>
                       </Paper>
-                    </Grid>
-                  );
-                })}
-              </Grid>
-            )}
+                    );
+                  })}
+                </Box>
+              )}
+            </Box>
           </>
         ) : (
           !loading && !error && (
