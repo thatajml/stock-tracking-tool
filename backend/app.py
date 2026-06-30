@@ -249,7 +249,9 @@ def get_stock_data(ticker):
                 "stoch": row["stoch"],
                 "stoch_signal": row["stoch_signal"],
                 "adx": row["adx"],
-                "vwap": row["vwap"]
+                "vwap": row["vwap"],
+                "ichimoku_a": row["ichimoku_a"],
+                "ichimoku_b": row["ichimoku_b"]
             })
             
         response = {

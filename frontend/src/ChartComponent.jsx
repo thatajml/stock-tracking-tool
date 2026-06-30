@@ -24,6 +24,15 @@ export default function ChartComponent({ data }) {
                 timeScale: { visible: false } // Hide time scale on top charts
             });
 
+            const ichiCloudSeries = mainChart.addCandlestickSeries({
+                upColor: 'rgba(76, 175, 80, 0.25)', 
+                downColor: 'rgba(244, 67, 54, 0.25)',
+                borderVisible: false,
+                wickVisible: false,
+                lastValueVisible: false,
+                priceLineVisible: false
+            });
+
             const candlestickSeries = mainChart.addCandlestickSeries({
                 upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
                 wickUpColor: '#26a69a', wickDownColor: '#ef5350',
@@ -32,8 +41,8 @@ export default function ChartComponent({ data }) {
             const smaSeries = mainChart.addLineSeries({ color: '#f5a623', lineWidth: 2, title: 'SMA 20' });
             const vwapSeries = mainChart.addLineSeries({ color: '#9c27b0', lineWidth: 2, title: 'VWAP' });
 
-            const ichiASeries = mainChart.addLineSeries({ color: 'rgb(76, 175, 80)', lineWidth: 2, lineStyle: 0, title: 'Ichimoku A' });
-            const ichiBSeries = mainChart.addLineSeries({ color: 'rgb(244, 67, 54)', lineWidth: 2, lineStyle: 0, title: 'Ichimoku B' });
+            const ichiASeries = mainChart.addLineSeries({ color: 'rgba(76, 175, 80, 0.8)', lineWidth: 1, lineStyle: 0, title: 'Ichimoku A', lastValueVisible: false, priceLineVisible: false });
+            const ichiBSeries = mainChart.addLineSeries({ color: 'rgba(244, 67, 54, 0.8)', lineWidth: 1, lineStyle: 0, title: 'Ichimoku B', lastValueVisible: false, priceLineVisible: false });
 
             // --- VOLUME CHART ---
             const volumeChart = createChart(volumeContainerRef.current, {
@@ -84,7 +93,7 @@ export default function ChartComponent({ data }) {
 
             chartRefs.current = {
                 mainChart, volumeChart, momentumChart,
-                candlestickSeries, smaSeries, vwapSeries, ichiASeries, ichiBSeries,
+                ichiCloudSeries, candlestickSeries, smaSeries, vwapSeries, ichiASeries, ichiBSeries,
                 volumeSeries, rsiSeries, stochSeries, adxSeries, macdHistSeries
             };
 
@@ -121,6 +130,15 @@ export default function ChartComponent({ data }) {
             if (series.vwapSeries) series.vwapSeries.setData(uniqueData.filter(i => i.vwap != null).map(i => ({ time: i.time, value: i.vwap })));
             if (series.ichiASeries) series.ichiASeries.setData(uniqueData.filter(i => i.ichimoku_a != null).map(i => ({ time: i.time, value: i.ichimoku_a })));
             if (series.ichiBSeries) series.ichiBSeries.setData(uniqueData.filter(i => i.ichimoku_b != null).map(i => ({ time: i.time, value: i.ichimoku_b })));
+            if (series.ichiCloudSeries) {
+                series.ichiCloudSeries.setData(uniqueData.filter(i => i.ichimoku_a != null && i.ichimoku_b != null).map(i => ({
+                    time: i.time,
+                    open: i.ichimoku_b,
+                    close: i.ichimoku_a,
+                    high: Math.max(i.ichimoku_a, i.ichimoku_b),
+                    low: Math.min(i.ichimoku_a, i.ichimoku_b)
+                })));
+            }
 
             if (series.rsiSeries) series.rsiSeries.setData(uniqueData.filter(i => i.rsi != null).map(i => ({ time: i.time, value: i.rsi })));
             if (series.stochSeries) series.stochSeries.setData(uniqueData.filter(i => i.stoch != null).map(i => ({ time: i.time, value: i.stoch })));
