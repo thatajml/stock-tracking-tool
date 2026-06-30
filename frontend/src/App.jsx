@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { 
-  Container, 
-  Typography, 
-  Box, 
+import {
+  Container,
+  Typography,
+  Box,
   Paper,
   Alert,
   CircularProgress,
@@ -45,7 +45,7 @@ function App() {
 
     setLoading(true)
     setError(null)
-    
+
     axios.get(`${API_BASE_URL}/stock/${selectedTicker}`)
       .then(res => {
         setStockData(res.data)
@@ -82,7 +82,7 @@ function App() {
         <Toolbar>
           <TrendingUpIcon sx={{ mr: 2 }} />
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
-            Stock Signal Dashboard (Pro System)
+            QuantSense Stock Signal Dashboard
           </Typography>
         </Toolbar>
       </AppBar>
@@ -98,7 +98,7 @@ function App() {
           <Typography variant="h4" component="h1" fontWeight="bold">
             Quantitative Analysis
           </Typography>
-          
+
           <Autocomplete
             freeSolo
             id="stock-search"
@@ -107,19 +107,19 @@ function App() {
             value={stocks.find(s => s.ticker === selectedTicker) || selectedTicker}
             onChange={(event, newValue) => {
               if (typeof newValue === 'string' && newValue.trim() !== '') {
-                  // User typed custom ticker. Automatically append .NS for NSE stocks if they didn't specify an exchange suffix
-                  const ticker = newValue.trim().toUpperCase();
-                  setSelectedTicker(ticker.includes('.') ? ticker : `${ticker}.NS`);
+                // User typed custom ticker. Automatically append .NS for NSE stocks if they didn't specify an exchange suffix
+                const ticker = newValue.trim().toUpperCase();
+                setSelectedTicker(ticker.includes('.') ? ticker : `${ticker}.NS`);
               } else if (newValue && newValue.ticker) {
-                  // User selected from pre-populated dropdown
-                  setSelectedTicker(newValue.ticker);
+                // User selected from pre-populated dropdown
+                setSelectedTicker(newValue.ticker);
               }
             }}
             renderInput={(params) => (
-              <TextField 
-                {...params} 
-                label="Search NSE Symbol (e.g. RELIANCE)" 
-                variant="outlined" 
+              <TextField
+                {...params}
+                label="Search NSE Symbol (e.g. RELIANCE)"
+                variant="outlined"
                 helperText="Press Enter to search"
               />
             )}
@@ -140,9 +140,9 @@ function App() {
               </Typography>
               <ChartComponent data={stockData.data} />
             </Paper>
-            
-            <Alert 
-              severity={getSignalColor(stockData.signal)} 
+
+            <Alert
+              severity={getSignalColor(stockData.signal)}
               sx={{ py: 2, px: 3, mb: 3, borderRadius: 2 }}
               iconMapping={{
                 success: <TrendingUpIcon fontSize="inherit" />,
@@ -150,9 +150,9 @@ function App() {
             >
               <Box sx={{ mb: 2 }}>
                 <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1 }}>
-                  Signal: {stockData.signal.toUpperCase()} 
+                  Signal: {stockData.signal.toUpperCase()}
                   <Typography component="span" sx={{ ml: 2, color: 'text.secondary' }}>
-                   Net Confidence Score: {stockData.score > 0 ? '+' : ''}{stockData.score}/100 
+                    Net Confidence Score: {stockData.score > 0 ? '+' : ''}{stockData.score}/100
                   </Typography>
                 </Typography>
 
@@ -160,16 +160,16 @@ function App() {
                   <Typography variant="caption" color="text.secondary">
                     Total Algorithmic Confidence (-100 to +100)
                   </Typography>
-                  <LinearProgress 
-                    variant="determinate" 
-                    value={getProgressValue(stockData.score)} 
+                  <LinearProgress
+                    variant="determinate"
+                    value={getProgressValue(stockData.score)}
                     color={getProgressColor(stockData.score)}
                     sx={{ height: 12, borderRadius: 5, mt: 0.5 }}
                   />
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 0.5 }}>
-                     <Typography variant="caption" color="error" fontWeight="bold">HEAVY SELL</Typography>
-                     <Typography variant="caption" color="warning.main" fontWeight="bold">HOLD RANGE</Typography>
-                     <Typography variant="caption" color="success.main" fontWeight="bold">HEAVY BUY</Typography>
+                    <Typography variant="caption" color="error" fontWeight="bold">HEAVY SELL</Typography>
+                    <Typography variant="caption" color="warning.main" fontWeight="bold">HOLD RANGE</Typography>
+                    <Typography variant="caption" color="success.main" fontWeight="bold">HEAVY BUY</Typography>
                   </Box>
                 </Box>
               </Box>
@@ -179,55 +179,55 @@ function App() {
             <Typography variant="h6" sx={{ mt: 4, mb: 2, fontWeight: 'bold' }}>
               Algorithmic Breakdown by Sub-Section:
             </Typography>
-            
+
             {stockData.categories && (
               <Grid container spacing={3}>
                 {Object.entries(stockData.categories).map(([categoryName, reasons]) => {
-                    // Assign colors based on category names for a premium look
-                    let headerColor = '#1976d2'; 
-                    if (categoryName === 'Trend') headerColor = '#9c27b0';
-                    if (categoryName === 'Momentum') headerColor = '#ed6c02';
-                    if (categoryName === 'Timing') headerColor = '#0288d1';
-                    if (categoryName === 'Confirmation') headerColor = '#2e7d32';
+                  // Assign colors based on category names for a premium look
+                  let headerColor = '#1976d2';
+                  if (categoryName === 'Trend') headerColor = '#9c27b0';
+                  if (categoryName === 'Momentum') headerColor = '#ed6c02';
+                  if (categoryName === 'Timing') headerColor = '#0288d1';
+                  if (categoryName === 'Confirmation') headerColor = '#2e7d32';
 
-                    return (
-                      <Grid item xs={12} md={6} key={categoryName}>
-                        <Paper 
-                          elevation={3} 
-                          sx={{ 
-                            height: '100%', 
-                            borderRadius: 2, 
-                            overflow: 'hidden',
-                            display: 'flex',
-                            flexDirection: 'column'
-                          }}
-                        >
-                          <Box sx={{ bgcolor: headerColor, color: 'white', py: 1.5, px: 2 }}>
-                            <Typography variant="subtitle1" fontWeight="bold">
-                              {categoryName} Logic
-                            </Typography>
-                          </Box>
-                          <Box sx={{ p: 2, flexGrow: 1, bgcolor: '#ffffff' }}>
-                            <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                              {reasons.map((r, idx) => {
-                                // Add subtle color coding to positive/negative scores
-                                const isPositive = r.startsWith('+');
-                                const isNegative = r.startsWith('-');
-                                const textColor = isPositive ? 'success.main' : isNegative ? 'error.main' : 'text.primary';
-                                
-                                return (
-                                  <li key={idx} style={{ marginBottom: '8px' }}>
-                                    <Typography variant="body2" color={textColor} fontWeight={isPositive || isNegative ? 'medium' : 'regular'}>
-                                      {r}
-                                    </Typography>
-                                  </li>
-                                );
-                              })}
-                            </ul>
-                          </Box>
-                        </Paper>
-                      </Grid>
-                    );
+                  return (
+                    <Grid item xs={12} md={6} key={categoryName}>
+                      <Paper
+                        elevation={3}
+                        sx={{
+                          height: '100%',
+                          borderRadius: 2,
+                          overflow: 'hidden',
+                          display: 'flex',
+                          flexDirection: 'column'
+                        }}
+                      >
+                        <Box sx={{ bgcolor: headerColor, color: 'white', py: 1.5, px: 2 }}>
+                          <Typography variant="subtitle1" fontWeight="bold">
+                            {categoryName} Logic
+                          </Typography>
+                        </Box>
+                        <Box sx={{ p: 2, flexGrow: 1, bgcolor: '#ffffff' }}>
+                          <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                            {reasons.map((r, idx) => {
+                              // Add subtle color coding to positive/negative scores
+                              const isPositive = r.startsWith('+');
+                              const isNegative = r.startsWith('-');
+                              const textColor = isPositive ? 'success.main' : isNegative ? 'error.main' : 'text.primary';
+
+                              return (
+                                <li key={idx} style={{ marginBottom: '8px' }}>
+                                  <Typography variant="body2" color={textColor} fontWeight={isPositive || isNegative ? 'medium' : 'regular'}>
+                                    {r}
+                                  </Typography>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </Box>
+                      </Paper>
+                    </Grid>
+                  );
                 })}
               </Grid>
             )}
