@@ -18,10 +18,16 @@ import {
   MenuItem,
   Popper,
   ClickAwayListener,
-  InputAdornment
+  InputAdornment,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@mui/material'
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import SearchIcon from '@mui/icons-material/Search';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import ChartComponent from './ChartComponent'
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000/api'
@@ -89,6 +95,7 @@ function App() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchText, setSearchText] = useState('')
   const searchAnchorRef = useRef(null)
+  const [disclaimerOpen, setDisclaimerOpen] = useState(true)
 
   useEffect(() => {
     // Set first stock as default
@@ -569,6 +576,36 @@ Display:
           )
         )}
       </Container>
+
+      {/* Footer Disclaimer */}
+      <Box sx={{ mt: 6, py: 3, px: 2, bgcolor: '#263238', color: '#b0bec5', textAlign: 'center' }}>
+        <Typography variant="caption" sx={{ maxWidth: 900, mx: 'auto', display: 'block', lineHeight: 1.6 }}>
+          <strong style={{ color: '#ffab00' }}>⚠ Disclaimer:</strong> Stock market investments are subject to market risks. The analysis, scores, and technical indicators provided on this website are for informational and educational purposes only and should not be considered financial or investment advice. Always conduct your own fundamental research and consult a qualified financial advisor before making any investment decisions. Do not make investment decisions solely based on the information provided by this website.
+        </Typography>
+      </Box>
+
+      {/* Disclaimer Popup */}
+      <Dialog
+        open={disclaimerOpen}
+        onClose={() => setDisclaimerOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1, bgcolor: '#fff3e0' }}>
+          <WarningAmberIcon sx={{ color: '#ed6c02' }} />
+          <Typography variant="h6" fontWeight="bold">Important Disclaimer</Typography>
+        </DialogTitle>
+        <DialogContent sx={{ mt: 2 }}>
+          <DialogContentText sx={{ color: 'text.primary', lineHeight: 1.8 }}>
+            Stock market investments are subject to market risks. The analysis, scores, and technical indicators provided on this website are for <strong>informational and educational purposes only</strong> and should not be considered financial or investment advice. Always conduct your own fundamental research and consult a qualified financial advisor before making any investment decisions. <strong>Do not make investment decisions solely based on the information provided by this website.</strong>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={() => setDisclaimerOpen(false)} variant="contained" color="warning">
+            I Understand
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }
